@@ -108,10 +108,18 @@ public static class battleState {
         if (allies.Count == 0)
         {
             Debug.Log("enemies win!");
+            foreach(Combatant enemy in enemies)
+            {
+                Object.Destroy(((MonoBehaviour) enemy).gameObject);
+            }
             return true;
         } else if (enemies.Count == 0)
         {
             Debug.Log("allies win!");
+            foreach (Combatant ally in allies)
+            {
+                Object.Destroy(((MonoBehaviour) ally).gameObject);
+            }
             return true;
         }
         return false;
@@ -142,7 +150,7 @@ public static class battleState {
     {
         if(currentSelection != null)
         {
-            currentSelection.target(target);
+            currentSelection.setTarget(target);
         }
     }
 }

@@ -11,15 +11,26 @@ public class progress : MonoBehaviour {
         public GameObject prefab;
     }
 
+    private static progress instance;
+
     public State initialState;
     public static State currentState;
-    public GameObject[] allies;
-    public GameObject[] enemies;
+    public Hero[] allies;
+    public Hero[] enemies;
     public Combatant test;
     public namedPrefab[] prefabs;
 
+    public GameObject player;
+    private GameObject opponent;
+    public GameObject tempOpp;
+
+    public Vector3 allySpawnCenter = new Vector3(1.9f, 0.75f, -6.5f);
+    public Vector3 enemySpawnCenter = new Vector3(0.75f, 0.75f, -6.5f);
+    public float spaceBetweenDudes = 0.3f;
+
 	// Use this for initialization
 	void Start () {
+        instance = this;
         currentState = initialState;
         for(int i = 0; i < prefabs.Length; i++)
         {
@@ -42,6 +53,7 @@ public class progress : MonoBehaviour {
                 walking();
                 break;
             case State.IDLE:
+                idle();
                 break;
             default:
                 Debug.Log("ERROR: default state case, should never be entered");
@@ -55,6 +67,11 @@ public class progress : MonoBehaviour {
         startBattle();
     }
 
+    private void idle()
+    {
+        //chooseOpponent(tempOpp);
+    }
+
     private void startBattle()
     {
         Debug.Log("Starting battle");
@@ -62,14 +79,17 @@ public class progress : MonoBehaviour {
         ArrayList newAllies = new ArrayList();
         ArrayList newEnemies = new ArrayList();
 
-        foreach(GameObject obj in allies) {
-            newAllies.Add(obj.GetComponent<Combatant>());
+        for(int i = 0; i < allies.Length; i++) {
+            GameObject spawned = allies[i].spawnHero();
+            spawned.transform.position = allySpawnCenter + new Vector3(0, 0, spaceBetweenDudes * i - spaceBetweenDudes * (allies.Length - 1f) / 2f);
+            newAllies.Add(spawned.GetComponent<Combatant>());
         }
-        foreach (GameObject obj in enemies)
+        for (int i = 0; i < enemies.Length; i++)
         {
-            newEnemies.Add(obj.GetComponent<Combatant>());
+            GameObject spawned = enemies[i].spawnHero();
+            spawned.transform.position = enemySpawnCenter + new Vector3(0, 0, spaceBetweenDudes * i - spaceBetweenDudes * (enemies.Length - 1f) / 2f);
+            newEnemies.Add(spawned.GetComponent<Combatant>());
         }
-
 
         battleState.newBattle(newAllies, newEnemies);
         currentState = State.BATTLE;
@@ -83,5 +103,19 @@ public class progress : MonoBehaviour {
     public State getState()
     {
         return currentState;
+    }
+
+
+    public void chooseOpponent(GameObject npc)
+    {
+        opponent = npc;
+        allies = player.GetComponent<TeamOwner>().getTeam();
+        enemies = npc.GetComponent<TeamOwner>().getTeam();
+        startBattle();
+    }
+
+    public static progress getInstance()
+    {
+        return instance;
     }
 }

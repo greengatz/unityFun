@@ -18,7 +18,7 @@ public class AlliedCombatant : MonoBehaviour, Combatant {
 
     public float spaceBetweenCards = 0.08f;
 
-    public Selectable[] options;
+    public GameObject[] options;
     private ArrayList instantiatedCards;
 
 	void Start () {
@@ -42,10 +42,12 @@ public class AlliedCombatant : MonoBehaviour, Combatant {
         instantiatedCards = new ArrayList();
         for (int i = 0; i < options.Length; i++)
         {
-            Selectable spawned = (Selectable)Object.Instantiate(options[i], this.gameObject.transform.position + Vector3.up * 0.3f + Vector3.forward * spaceBetweenCards * i
+            GameObject spawned = (GameObject) Object.Instantiate(options[i], this.gameObject.transform.position + Vector3.up * 0.3f + Vector3.forward * spaceBetweenCards * i
                                                                             + Vector3.back * spaceBetweenCards * options.Length / 2, this.gameObject.transform.rotation);
-            spawned.setAttacker(this);
+
             instantiatedCards.Add(spawned);
+            Selectable spawnedCast = spawned.GetComponent<Selectable>();
+            spawnedCast.setSource(this);
         }
         hasDisplayedOptions = true;
     }
@@ -55,7 +57,7 @@ public class AlliedCombatant : MonoBehaviour, Combatant {
         foreach (Object card in instantiatedCards) {
             if (card != null)
             {
-                Object.Destroy(((Selectable)card).gameObject);
+                Object.Destroy(((GameObject)card));
             }
         }
         actionChosen = true;
