@@ -20,6 +20,7 @@ public class Challenger : MonoBehaviour, TeamOwner {
 
     public void OnMouseDown()
     {
+        Debug.Log("clicked");
         if(progress.currentState == State.IDLE)
         {
             progress.getInstance().chooseOpponent(this.gameObject);

@@ -29,7 +29,7 @@ public class AttackAction : Action {
         isExecuting = true;
         Debug.Log(attacker.getName() + " attacks " + target.getName() + " for " + damage + " damage!");
 
-        Object proj = Object.Instantiate(PrefabDict.get("ball"), ((MonoBehaviour)attacker).gameObject.transform.position + Vector3.up * 0.3f,
+        Object proj = Object.Instantiate(PrefabDict.get("arrow"), ((MonoBehaviour)attacker).gameObject.transform.position + Vector3.up * 0.3f,
                                         //((MonoBehaviour)attacker).gameObject.transform.rotation);
                                         Quaternion.LookRotation(Vector3.up));
 
